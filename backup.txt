@@ -1,0 +1,107 @@
+Sub main()
+Dim WBQues As Workbook
+Set WBQues = Workbooks.Open("C:\Users\MA075346\Desktop\Project\InterviewQuestions.xlsx")
+'WBQues.Sheets("Questions").Range("F1") = WorksheetFunction.RandBetween(1, 5)
+Call Ques(WBQues)
+WBQues.Save
+
+End Sub
+
+Function Ques(WBQues As Workbook)
+Dim SysQues As Variant
+Dim SysQuesKeywords As Variant
+Dim SysAnsOrder As Integer
+Dim WBresult As Workbook
+Dim UserValue As String
+Dim row As Integer
+'Set WBresult = Workbooks.Open("C:\Users\MA075346\Desktop\Project\Result.xlsx")
+'WBresult.Worksheets("Sheet1").Range("A1:G37").ClearContents
+WBQues.Sheets("Questions").Activate
+LR = WBQues.Sheets("Questions").Cells(Rows.Count, 1).End(xlUp).row
+'MsgBox (LR)
+row = 2
+For i = 2 To LR
+    SysQues = (WBQues.Sheets("Questions").Cells(i, 1).Value)
+    SysQuesKeywords = (WBQues.Sheets("Questions").Cells(i, 3).Value)
+    SysAnsOrder = (WBQues.Sheets("Questions").Cells(i, 4).Value)
+    UserValue = ReadFileLineByLine(WBQues)
+    Call CheckAns(WBQues, SysQues, SysQuesKeywords, SysAnsOrder, row, UserValue)
+    Next i
+End Function
+
+Function CheckAns(WBQues As Workbook, Ques As Variant, SysQuesKeywords As Variant, SysAnsOrder As Integer, row As Integer, UserValue As String)
+    Dim UserAns As Variant
+    Dim i As Integer
+    Dim result As String
+    Dim score As Integer
+    i = 0
+    result = "false"
+    'UserAns = InputBox(Ques)
+    UserAns = WBQues.Sheets("Result").Cells(row, 2).Value
+    UserAnsArr = Split(UserAns, " ")
+    KeyWordsArr = Split(SysQuesKeywords, ",")
+    If (UBound(UserAnsArr) >= UBound(KeyWordsArr)) Then
+    If (SysAnsOrder = 1) Then
+        For Each k In KeyWordsArr
+        result = "false"
+           On Error Resume Next
+            res = StrComp(UserAnsArr(i), k, vbTextCompare)
+            'If (UserAnsArr(i) = k) Then
+            If (res = 0) Then
+                result = "true"
+            Else: Exit For
+                'result = "false"
+            End If
+            i = i + 1
+        Next k
+    
+    If (result = "true") Then
+        'MsgBox ("correct Answer")
+        
+    Else
+        'MsgBox ("Wrong Answer")
+    End If
+    End If
+    Else
+    'MsgBox ("Wrong Answer")
+    End If
+    Call UpdateResult(Ques, UserAns, result, row, WBQues)
+End Function
+
+Function UpdateResult(Ques As Variant, UserAns As Variant, result As String, row As Integer, WBQues As Workbook)
+MsgBox (Ques & " " & UserAns & " " & result)
+WBQues.Sheets("Result").Activate
+Cells(row, 1).Value = Ques
+'Cells(row, 2).Value = UserAns
+If (result = "false") Then
+Cells(row, 3).Value = "Wrong answer"
+Cells(row, 4).Value = 0
+Else
+Cells(row, 3).Value = "Correct answer"
+Cells(row, 4).Value = 1
+End If
+'WBresult.Sheets("Sheet1").cell(row, 4).Value = Ques
+row = row + 1
+End Function
+
+
+Function ReadFileLineByLine(WBQues As Workbook) As String
+    Dim my_file As Integer
+    Dim text_line As String
+    Dim file_name As String
+    Dim i As Integer
+
+    file_name = "C:\Users\MA075346\Desktop\Project\Answer.txt"
+
+    my_file = FreeFile()
+    Open file_name For Input As my_file
+
+    i = 2
+
+    While Not EOF(my_file)
+        Line Input #my_file, text_line
+        WBQues.Sheets("Result").Cells(i, "B").Value = text_line
+        ReadFileLineByLine = text_line
+        i = i + 1
+    Wend
+End Function

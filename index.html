@@ -1,0 +1,51 @@
+
+<!DOCTYPE html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Team seal-Automated Interviewer</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shoelace-css/1.0.0-beta16/shoelace.css">
+        <link rel="stylesheet" href="styles.css">
+
+    </head>
+    <body style="background-color:#847b7b6e">
+        <div class="container">
+
+            <center> <b> <h1>Automated Interviewer </h1> </b> <center>           
+	    <p> what is the full form of SQL? </p>
+            <div class="app"> 
+                <div class="input-single">
+                    <textarea id="note-textarea" placeholder="Speak Here...." rows="6"></textarea>
+                </div>         
+                <button id="start-record-btn" title="Start Recording">Start Recognition</button>
+                <button id="pause-record-btn" title="Pause Recording">Pause Recognition</button>
+                <button id="save-note-btn" title="Save Note" onclick="WriteToFile();">Save Note</button>                                             
+            </div>
+
+        </div>
+	<div>
+		<center><img src="2.jpg" width="350px" height="350px"/></center>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="script.js"></script>
+	<script src="FileSaver.js"></script>
+	
+	<script>
+	function WriteToFile(){
+	var noteTextarea =document.getElementById('note-textarea').value;
+	var blob=new Blob([noteTextarea ],{type: "text/plain;charset=utf-8"});
+	saveAs(blob, "input.txt"); 
+	}
+	</script>
+
+
+        <!-- Only used for the demos ads. Please ignore and remove. --> 
+        <script src="https://cdn.tutorialzine.com/misc/enhance/v3.js" async></script>
+
+    </body>
+</html>
+
+
